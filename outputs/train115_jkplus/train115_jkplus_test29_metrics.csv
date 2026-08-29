@@ -1,0 +1,10 @@
+metric,value
+n_test_subjects,29.0
+rmse_years,1.403451450722289
+mae_years,1.1518997974097387
+r_squared,0.8712832095174539
+empirical_coverage,1.0
+mean_interval_width_years,7.236136329014156
+median_interval_width_years,7.027858437551929
+minimum_interval_width_years,7.0278584375519255
+maximum_interval_width_years,7.693802520452089

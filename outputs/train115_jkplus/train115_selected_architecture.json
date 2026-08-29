@@ -1,0 +1,5 @@
+{
+  "selected_architecture": "RBF Kernel Ridge",
+  "criterion": "minimum train-set outer-LOOCV RMSE",
+  "test_outcomes_used": false
+}

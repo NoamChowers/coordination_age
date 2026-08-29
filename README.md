@@ -15,6 +15,8 @@ python -m pip install -r requirements.txt
 - `Data/X.csv`: exactly the selected 32 predictors in production order.
 - `Data/y.csv`: one row-aligned target column, `AgeInYears`.
 - `Data/modeling_input_metadata.json`: subject ordering and construction audit.
+- `Data/train_test_split.csv`: recovered historical 115/29 membership, production-row
+  position, and original within-partition order.
 
 The FIT script consumes `X.csv` and `y.csv`; it does not redo laboratory data
 processing or feature selection. Documentation for constructing these files is
@@ -66,6 +68,22 @@ tuple:
 ```
 
 The command-line script serializes that tuple into the five files above.
+
+## Train-only model selection and test-set interval audit
+
+Run `notebooks/train_model_selection_and_jackknife_plus_test.ipynb` to:
+
+- compare KRR, ElasticNet, Lasso, Ridge, OLS, and fixed Random Forest using
+  train-only outer-LOOCV predictions;
+- save a separate 115-subject KRR JK+ artifact set under
+  `artifacts/train115_jackknife_plus_krr/`; and
+- predict the 29 historical test subjects with 95% JK+ intervals, saving
+  row-level results and diagnostics under `outputs/train115_jkplus/`.
+
+The notebook is self-contained within this repository. Test outcomes enter
+only after architecture selection, fitting, and interval construction. Because
+they were inspected during earlier project work, the resulting test metrics
+are a post-hoc audit rather than pristine external validation.
 
 ## Infer on a new X
 

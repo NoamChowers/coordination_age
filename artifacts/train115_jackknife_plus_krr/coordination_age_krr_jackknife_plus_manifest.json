@@ -1,0 +1,84 @@
+{
+  "artifact_type": "coordination_age_krr_jackknife_plus",
+  "artifact_version": 1,
+  "artifacts": {
+    "loo_models": {
+      "bytes": 3800400,
+      "filename": "coordination_age_krr_jackknife_plus_loo_models.pkl",
+      "sha256": "cc20b9acd8ce3b281204358b3206616a6b8e22ef68797f91a644e7d34210e713"
+    },
+    "production_model": {
+      "bytes": 34980,
+      "filename": "coordination_age_krr_jackknife_plus_production_model.pkl",
+      "sha256": "1abfc9964f04ca781881cc17bebfefc02514221db80ff860f45558857f9f00a2"
+    },
+    "residuals": {
+      "bytes": 9098,
+      "filename": "coordination_age_krr_jackknife_plus_residuals.csv",
+      "sha256": "5c8e8677afc8d7005e427476048ed2f1765eedc6a0acee1f1e4e25cee1f254dd"
+    },
+    "selections": {
+      "bytes": 19435,
+      "filename": "coordination_age_krr_jackknife_plus_selections.csv",
+      "sha256": "fdcb830633cfe8c1f129828df05a2631629ab29a536c35b3ff5d548b3752a8d6"
+    }
+  },
+  "created_utc": "2026-08-29T21:51:49.249048+00:00",
+  "cv_scoring": "neg_mean_squared_error",
+  "cv_seed": 42,
+  "embedded_pipeline_steps": [
+    "median imputation",
+    "1%/99% winsorization",
+    "feature-wise Yeo-Johnson",
+    "standardization",
+    "target standardization",
+    "RBF kernel ridge"
+  ],
+  "feature_columns": [
+    "Sex_0Female_1Male",
+    "boxAndBlocks",
+    "jebsen_PageTurning",
+    "jebsen_SmallObjects",
+    "jebsen_Beans",
+    "jebsen_Checkers",
+    "jebsen_LightCans",
+    "jebsen_HeavyCans",
+    "MVC",
+    "deltaV",
+    "V_UCM",
+    "V_ORT",
+    "peakvel",
+    "movementtime",
+    "maxaperturePercent",
+    "meandistance",
+    "peakGripForceLight",
+    "peakGripForceHeavy",
+    "peakLoadForceLight",
+    "peakLoadForceHeavy",
+    "peakGripForceRateLight",
+    "peakGripForceRateHeavy",
+    "peakLoadForceRateLight",
+    "peakLoadForceRateHeavy",
+    "T1T3Light",
+    "T1T3Heavy",
+    "T1T5Light",
+    "T1T5Heavy",
+    "liftMeanDifferencesLight",
+    "liftMeanDifferencesHeavy",
+    "numPeaksLight",
+    "numPeaksHeavy"
+  ],
+  "inner_folds": 5,
+  "input_contract": "Upstream domain validation, n>=5 censoring, invalid-timing cleanup, and approved-feature selection already applied; statistical transforms remain embedded in each fitted pipeline.",
+  "n_loo_models": 115,
+  "n_production_models": 1,
+  "n_training_observations": 115,
+  "residual_definition": "absolute_residual = abs(y_i - f_minus_i(X_i))",
+  "software": {
+    "numpy": "2.1.3",
+    "pandas": "2.2.3",
+    "python": "3.13.0",
+    "scikit_learn": "1.6.1"
+  },
+  "total_models": 116
+}

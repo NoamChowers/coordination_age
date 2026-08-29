@@ -1,0 +1,7 @@
+{
+  "n_training": 115,
+  "alpha": 0.05,
+  "tail_alpha": 0.025,
+  "lower_rank_one_based": 2,
+  "upper_rank_one_based": 114
+}
