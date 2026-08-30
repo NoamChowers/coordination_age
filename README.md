@@ -22,6 +22,33 @@ The FIT script consumes `X.csv` and `y.csv`; it does not redo laboratory data
 processing or feature selection. Documentation for constructing these files is
 kept separately in `scripts/data/README.md`.
 
+## Required input-data assumptions
+
+Both model fitting and inference assume that the input aggregates were
+prepared under the following rules. The modeling scripts do not detect or
+correct violations of these assumptions.
+
+1. **The blacklist is authoritative.** Trial inclusion and exclusion must
+   follow the laboratory blacklist as the source of truth. Blacklisted trials
+   must not contribute to any aggregate.
+
+2. **Copied trials are excluded.** Aggregates must not include repeated or
+   copied trials. This includes the known block-copy scenario in which trials
+   11–20 duplicate trials 1–10.
+
+3. **At least five valid trials are required.** For repeated-trial
+   measurements from the `pressing`, `reach-to-grasp`, and `lift-object`
+   tasks, an aggregate must be set to `NaN` whenever fewer than five valid,
+   non-blacklisted, non-copied trials contribute to it.
+
+   For example, if a participant has only four valid `reach-to-grasp` trials,
+   the associated `peakvel`, `movementtime`, `maxaperturePercent`, and
+   `meandistance` aggregates must be `NaN`; they must not be calculated from
+   those four trials.
+
+New inference data must satisfy the same assumptions as the data used for
+fitting.
+
 ## Fit the saved model objects
 
 Run `notebooks/fit_and_infer_jackknife_plus_krr.ipynb` from top to bottom. The

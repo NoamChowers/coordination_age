@@ -1,8 +1,15 @@
 # Data preparation scripts
 
-These scripts transform the laboratory's all-trials feature delivery into the
-fixed aggregate model inputs. They are separate from model fitting so the FIT
-and INFER scripts receive an already valid 32-feature matrix.
+This pipeline takes the laboratory's all-trials feature delivery and produces
+an aggregate dataset that conforms to the model's required data-validity
+rules: the blacklist is authoritative, copied trials do not contribute to
+aggregates, and repeated-trial aggregates from `pressing`, `reach-to-grasp`,
+and `lift-object` are set to `NaN` when fewer than five valid trials remain.
+
+The resulting aggregate dataset is then reduced to the fixed 32-feature model
+matrix and aligned age target. Data preparation remains separate from fitting
+so the FIT and INFER scripts receive inputs that already satisfy these domain
+rules.
 
 ## 1. Enforce the laboratory blacklist and remove copied trials
 
