@@ -112,6 +112,12 @@ only after architecture selection, fitting, and interval construction. Because
 they were inspected during earlier project work, the resulting test metrics
 are a post-hoc audit rather than pristine external validation.
 
+Run `notebooks/model_diagnostics_and_conformal_visualizations.ipynb` to create
+the saved train-LOOCV comparison, held-out-test JK+ interval diagnostics, and
+full-data LOOCV KRR diagnostics. This notebook performs no model fitting; it
+reads the saved prediction tables and writes PNGs plus a figure manifest under
+`outputs/visualizations/`.
+
 ## Infer on a new X
 
 The new CSV must contain the same 32 columns, in the same order, as
