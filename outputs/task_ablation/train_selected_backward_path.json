@@ -1,0 +1,84 @@
+{
+  "created_utc": "2026-09-03T10:40:55.108546+00:00",
+  "group_order": [
+    "Box and Blocks",
+    "Jebsen-Taylor",
+    "Finger pressing",
+    "Reach-to-grasp",
+    "Lift-object light",
+    "Lift-object heavy"
+  ],
+  "path": [
+    {
+      "removed_at_step": null,
+      "retained_groups": [
+        "Box and Blocks",
+        "Jebsen-Taylor",
+        "Finger pressing",
+        "Reach-to-grasp",
+        "Lift-object light",
+        "Lift-object heavy"
+      ],
+      "step": 0,
+      "subset_id": "groups_111111",
+      "train_oof_rmse": 1.4214992671510223
+    },
+    {
+      "removed_at_step": "Box and Blocks",
+      "retained_groups": [
+        "Jebsen-Taylor",
+        "Finger pressing",
+        "Reach-to-grasp",
+        "Lift-object light",
+        "Lift-object heavy"
+      ],
+      "step": 1,
+      "subset_id": "groups_011111",
+      "train_oof_rmse": 1.4134245304176256
+    },
+    {
+      "removed_at_step": "Reach-to-grasp",
+      "retained_groups": [
+        "Jebsen-Taylor",
+        "Finger pressing",
+        "Lift-object light",
+        "Lift-object heavy"
+      ],
+      "step": 2,
+      "subset_id": "groups_011011",
+      "train_oof_rmse": 1.4761927451017227
+    },
+    {
+      "removed_at_step": "Lift-object light",
+      "retained_groups": [
+        "Jebsen-Taylor",
+        "Finger pressing",
+        "Lift-object heavy"
+      ],
+      "step": 3,
+      "subset_id": "groups_011001",
+      "train_oof_rmse": 1.622857199634762
+    },
+    {
+      "removed_at_step": "Finger pressing",
+      "retained_groups": [
+        "Jebsen-Taylor",
+        "Lift-object heavy"
+      ],
+      "step": 4,
+      "subset_id": "groups_010001",
+      "train_oof_rmse": 1.8261032477841388
+    },
+    {
+      "removed_at_step": "Lift-object heavy",
+      "retained_groups": [
+        "Jebsen-Taylor"
+      ],
+      "step": 5,
+      "subset_id": "groups_010000",
+      "train_oof_rmse": 2.2198701013902733
+    }
+  ],
+  "run_signature": "105253c886fb4765d17c93bee58872d67e767a032468db35e03d1bf56dd611c7",
+  "selection_metric": "train_oof_rmse"
+}

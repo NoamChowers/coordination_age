@@ -415,6 +415,15 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--target-column", required=True)
     parser.add_argument("--id-column", default=None)
+    parser.add_argument(
+        "--drop-column",
+        action="append",
+        default=[],
+        help=(
+            "Feature column to remove before fitting. Repeat this option to "
+            "remove multiple columns. The resulting schema is recorded in the manifest."
+        ),
+    )
     parser.add_argument("--sex-column", default=DEFAULT_SEX_COLUMN)
     parser.add_argument("--seed", type=int, default=DEFAULT_SEED)
     parser.add_argument("--inner-folds", type=int, default=DEFAULT_INNER_FOLDS)
@@ -431,6 +440,17 @@ def main() -> None:
         id_column=args.id_column,
         target_column=args.target_column,
     )
+    duplicate_drops = sorted(
+        column for column in set(args.drop_column) if args.drop_column.count(column) > 1
+    )
+    if duplicate_drops:
+        raise ValueError(f"Duplicate --drop-column values: {duplicate_drops}")
+    missing_drops = sorted(set(args.drop_column) - set(X.columns))
+    if missing_drops:
+        raise ValueError(f"Cannot drop missing feature columns: {missing_drops}")
+    if args.drop_column:
+        X = X.drop(columns=args.drop_column)
+
     fitted = fit_jackknife_plus_krr(
         X,
         y,

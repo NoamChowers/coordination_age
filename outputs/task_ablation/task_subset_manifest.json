@@ -1,0 +1,172 @@
+{
+  "always_retained": [
+    "Sex_0Female_1Male"
+  ],
+  "analysis": "experiment_level_task_ablation",
+  "backward_path_sha256": "77f3e37a4d0897cce1a685d6702e1d159cb960dbdf0d066266b183cc74a50c14",
+  "created_utc": "2026-09-03T10:41:07.560709+00:00",
+  "evaluated_subset_count": 21,
+  "group_order": [
+    "Box and Blocks",
+    "Jebsen-Taylor",
+    "Finger pressing",
+    "Reach-to-grasp",
+    "Lift-object light",
+    "Lift-object heavy"
+  ],
+  "groups": {
+    "Box and Blocks": [
+      "boxAndBlocks"
+    ],
+    "Finger pressing": [
+      "MVC",
+      "deltaV",
+      "V_UCM",
+      "V_ORT"
+    ],
+    "Jebsen-Taylor": [
+      "jebsen_PageTurning",
+      "jebsen_SmallObjects",
+      "jebsen_Beans",
+      "jebsen_Checkers",
+      "jebsen_LightCans",
+      "jebsen_HeavyCans"
+    ],
+    "Lift-object heavy": [
+      "peakGripForceHeavy",
+      "peakLoadForceHeavy",
+      "peakGripForceRateHeavy",
+      "peakLoadForceRateHeavy",
+      "T1T3Heavy",
+      "T1T5Heavy",
+      "liftMeanDifferencesHeavy",
+      "numPeaksHeavy"
+    ],
+    "Lift-object light": [
+      "peakGripForceLight",
+      "peakLoadForceLight",
+      "peakGripForceRateLight",
+      "peakLoadForceRateLight",
+      "T1T3Light",
+      "T1T5Light",
+      "liftMeanDifferencesLight",
+      "numPeaksLight"
+    ],
+    "Reach-to-grasp": [
+      "peakvel",
+      "movementtime",
+      "maxaperturePercent",
+      "meandistance"
+    ]
+  },
+  "inner_folds": 5,
+  "inputs": {
+    "X.csv": "0c6f3bb47a1ce16813bec7b0ac8caf11b80e921be91c3d895f31f64605d2c334",
+    "train_test_split.csv": "e0c636715b63c20b38700f251b1634d8f0dcd61ac95ac23e147042ea350b65fa",
+    "y.csv": "13138abaaebdc466889c841256d6402a69c4253a5892fc9b77a5158171f36f95"
+  },
+  "krr_grid": {
+    "alpha": [
+      0.0001,
+      0.00031622776601683794,
+      0.001,
+      0.0031622776601683794,
+      0.01,
+      0.03162277660168379,
+      0.1,
+      0.31622776601683794,
+      1.0,
+      3.1622776601683795,
+      10.0,
+      31.622776601683793,
+      100.0,
+      316.22776601683796,
+      1000.0
+    ],
+    "gamma": [
+      0.0003,
+      0.001,
+      0.003,
+      0.01,
+      0.03,
+      0.1,
+      0.3,
+      1.0
+    ]
+  },
+  "n_jobs": 6,
+  "n_test": 29,
+  "n_train": 115,
+  "outer_cv": "LeaveOneOut",
+  "outputs": {
+    "backward_elimination_candidates.csv": {
+      "bytes": 14939,
+      "sha256": "da4a8e78e7fd127e39adcc3c32e9e32b786564563b2282c3174ad6ca0c85618d"
+    },
+    "backward_elimination_path.csv": {
+      "bytes": 4817,
+      "sha256": "a3ccb6002e8784ff19f5ebe11c3a8910ef3f81f0291e3b3e342ec66ec6d206b1"
+    },
+    "backward_path_metrics.csv": {
+      "bytes": 1686,
+      "sha256": "5ef11eb87ef8859bfe452a4781e51a2a9856624d722c9f8fde8cf3e7fcff9418"
+    },
+    "backward_path_test_predictions.csv": {
+      "bytes": 12116,
+      "sha256": "1aeed38f5b64c0c33b00efdeba4367b1ce16f1a0fdb8b709076cde80be581558"
+    },
+    "figures/task_ablation_rmse.png": {
+      "bytes": 299685,
+      "sha256": "a02aff72fc78626fc9f690e53a2527301a0e114ffd984427b1a6d546f972398f"
+    },
+    "leave_one_experiment_out_metrics.csv": {
+      "bytes": 1320,
+      "sha256": "6408287f4c19fa0c828b3dd6ba1a8273a13a77d8b8cb5745be4b907db777f46b"
+    },
+    "leave_one_experiment_out_paired_oof_bootstrap.csv": {
+      "bytes": 667,
+      "sha256": "1b7d1d96a98cd531b77d03843631d743b64eeb938d43b845a58a28069105ba7a"
+    },
+    "leave_one_experiment_out_test_predictions.csv": {
+      "bytes": 14123,
+      "sha256": "fbc3a7acac43107e6426467e9db43e098239cfc130904048ea0fa49cd970141a"
+    },
+    "task_subset_metrics.csv": {
+      "bytes": 18236,
+      "sha256": "8b4575c3c6a10963321202f370d934d78b548709179ff665dab063df03bc1344"
+    },
+    "task_subset_oof_predictions.csv": {
+      "bytes": 169023,
+      "sha256": "3f778cefa903d33fdf6d59bbbc2e3332ab1497ee1346c5897194d4c1d2c22216"
+    },
+    "task_subset_outer_fold_hyperparameters.csv": {
+      "bytes": 179359,
+      "sha256": "11a0667e317c4316dcf6a43aec433568a61dd5f603857bdf0a448d2fbd226cc2"
+    },
+    "task_subset_test_metrics.csv": {
+      "bytes": 2729,
+      "sha256": "d98bfeae04c17b75fb054f6f64ab3962ba959d6bc3c814ecff622ab66c073db5"
+    },
+    "task_subset_test_predictions.csv": {
+      "bytes": 22139,
+      "sha256": "2b26168a6489747e1c77a6765913455847c159ff80364e229bbd4861522d33a9"
+    },
+    "train_selected_backward_path.json": {
+      "bytes": 2043,
+      "sha256": "77f3e37a4d0897cce1a685d6702e1d159cb960dbdf0d066266b183cc74a50c14"
+    },
+    "train_selected_backward_path.sha256": {
+      "bytes": 100,
+      "sha256": "b525afd0e728a4aa0ff1f3fd050ffe91189e913f431b755c5f789dcf3dc398cd"
+    }
+  },
+  "run_signature": "105253c886fb4765d17c93bee58872d67e767a032468db35e03d1bf56dd611c7",
+  "seed": 42,
+  "selection_metric": "train_oof_rmse",
+  "software": {
+    "numpy": "2.1.3",
+    "pandas": "2.2.3",
+    "python": "3.13.0",
+    "scikit_learn": "1.6.1"
+  }
+}
