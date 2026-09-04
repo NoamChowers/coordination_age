@@ -121,7 +121,7 @@ reads the saved prediction tables and writes PNGs plus a figure manifest under
 `outputs/visualizations/`.
 
 Run `python scripts/visualizations/create_dataset_split_overview.py` to create
-the descriptive age-distribution and predictor-group missingness overview,
+the descriptive age-bin and task-level participant-missingness overview,
 along with its source summary tables, under `outputs/visualizations/`.
 
 ## Infer on a new X

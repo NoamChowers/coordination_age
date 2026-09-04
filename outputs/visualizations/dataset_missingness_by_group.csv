@@ -1,7 +1,6 @@
-predictor_group,n_predictors,missing_cells,total_cells,missing_percent
-Demographic (sex),1,0,144,0.0
-Box and Blocks,1,0,144,0.0
-Jebsen–Taylor,6,0,864,0.0
-Finger pressing,4,9,576,1.5625
-Reach-to-grasp,4,52,576,9.027777777777779
-Object lifting,16,77,2304,3.342013888888889
+task_group,n_predictors,participants_any_missing,participants_all_predictors_missing,participants_partially_missing,total_participants,participants_any_missing_percent
+Box and Blocks,1,0,0,0,144,0.0
+Jebsen–Taylor,6,0,0,0,144,0.0
+Finger pressing,4,3,0,3,144,2.0833333333333335
+Reach-to-grasp,4,13,13,0,144,9.027777777777779
+Object lifting,16,8,0,8,144,5.555555555555555

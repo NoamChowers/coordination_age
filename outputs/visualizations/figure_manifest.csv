@@ -1,5 +1,5 @@
 filename,description,sources
-dataset_split_overview.png,Chronological-age distributions in the historical train/test split and predictor-group missingness.,X.csv; y.csv; recovered_train_test_split.csv
+dataset_split_overview.png,Chronological-age-bin distributions in the historical train/test split and participants with missing predictors by task.,X.csv; y.csv; recovered_train_test_split.csv
 figure_1_train_loocv_model_comparison.png,"Absolute train-set OOF error distributions, ordered by aggregate RMSE.",train115_model_selection_oof_predictions.csv; train115_model_selection_metrics.csv
 figure_2_train_loocv_krr_calibration.png,Chronological versus KRR OOF-predicted age on the train set.,train115_model_selection_oof_predictions.csv
 figure_3_test_jkplus_interval_diagnostics.png,"Held-out test predictions, 95% JK+ intervals, and train-to-test calibration.",train115_jkplus_test29_predictions.csv

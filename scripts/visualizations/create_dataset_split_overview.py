@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Create a compact overview of the modeling cohort and historical split.
 
-The figure combines the within-split chronological-age distributions with
-predictor-cell missingness summarized by measurement group. Raw summary tables
-are saved beside the PNG so every plotted value is auditable.
+The figure combines the within-split chronological-age distributions with the
+number of participants having at least one missing predictor in each task.
+Raw summary tables are saved beside the PNG so every plotted value is auditable.
 """
 
 from __future__ import annotations
@@ -44,9 +44,8 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def predictor_groups(columns: list[str]) -> dict[str, list[str]]:
+def task_groups(columns: list[str]) -> dict[str, list[str]]:
     fixed = {
-        "Demographic (sex)": ["Sex_0Female_1Male"],
         "Box and Blocks": ["boxAndBlocks"],
         "Jebsen–Taylor": [column for column in columns if column.startswith("jebsen_")],
         "Finger pressing": ["MVC", "deltaV", "V_UCM", "V_ORT"],
@@ -57,12 +56,14 @@ def predictor_groups(columns: list[str]) -> dict[str, list[str]]:
             "meandistance",
         ],
     }
-    assigned = {column for group in fixed.values() for column in group}
+    non_task_columns = {"Sex_0Female_1Male"}
+    assigned = non_task_columns | {column for group in fixed.values() for column in group}
     fixed["Object lifting"] = [column for column in columns if column not in assigned]
 
     flattened = [column for group in fixed.values() for column in group]
-    if len(flattened) != len(set(flattened)) or set(flattened) != set(columns):
-        raise ValueError("Predictor groups do not partition the columns of X.csv.")
+    expected = set(columns) - non_task_columns
+    if len(flattened) != len(set(flattened)) or set(flattened) != expected:
+        raise ValueError("Task groups do not partition the task predictors in X.csv.")
     return fixed
 
 
@@ -81,7 +82,7 @@ def age_summary(y: pd.DataFrame, split: pd.DataFrame) -> tuple[pd.DataFrame, pd.
         cohort["partition"], categories=["train", "test"], ordered=True
     )
 
-    edges = np.arange(4, 20, 1, dtype=float)
+    edges = np.array([4, 8, 12, 16, 19], dtype=float)
     labels = [f"[{int(left)}, {int(right)})" for left, right in zip(edges[:-1], edges[1:])]
     cohort["age_bin"] = pd.cut(
         cohort["chronological_age_years"],
@@ -108,16 +109,22 @@ def age_summary(y: pd.DataFrame, split: pd.DataFrame) -> tuple[pd.DataFrame, pd.
 
 def missingness_summary(x: pd.DataFrame) -> pd.DataFrame:
     records = []
-    for group, columns in predictor_groups(list(x.columns)).items():
-        missing = int(x[columns].isna().sum().sum())
-        cells = int(x.shape[0] * len(columns))
+    for group, columns in task_groups(list(x.columns)).items():
+        missing_by_participant = x[columns].isna().sum(axis=1)
+        any_missing = int((missing_by_participant > 0).sum())
+        all_missing = int((missing_by_participant == len(columns)).sum())
+        partial_missing = int(
+            ((missing_by_participant > 0) & (missing_by_participant < len(columns))).sum()
+        )
         records.append(
             {
-                "predictor_group": group,
+                "task_group": group,
                 "n_predictors": len(columns),
-                "missing_cells": missing,
-                "total_cells": cells,
-                "missing_percent": 100.0 * missing / cells,
+                "participants_any_missing": any_missing,
+                "participants_all_predictors_missing": all_missing,
+                "participants_partially_missing": partial_missing,
+                "total_participants": len(x),
+                "participants_any_missing_percent": 100.0 * any_missing / len(x),
             }
         )
     return pd.DataFrame(records)
@@ -127,6 +134,7 @@ def make_figure(
     cohort: pd.DataFrame,
     age_counts: pd.DataFrame,
     missingness: pd.DataFrame,
+    participants_any_missing: int,
     output_path: Path,
 ) -> None:
     plt.rcParams.update(
@@ -157,36 +165,41 @@ def make_figure(
             color=color,
             alpha=0.88,
         )
-        age_ax.bar_label(bars, labels=[str(value) if value else "" for value in raw_counts], padding=2, fontsize=8)
+        age_ax.bar_label(
+            bars,
+            labels=[str(value) if value else "" for value in raw_counts],
+            padding=2,
+            fontsize=8,
+        )
 
     age_ax.set_title("A. Chronological-age distribution", loc="left", fontweight="bold")
     age_ax.set_xlabel("Age bin (years); labels above bars are participant counts")
     age_ax.set_ylabel("Participants within split (%)")
     age_ax.set_xticks(x_positions)
-    age_ax.set_xticklabels([str(age) for age in range(4, 19)])
-    age_ax.set_ylim(0, max(age_ax.get_ylim()[1], 16.5))
+    age_ax.set_xticklabels(age_counts["age_bin_years"])
+    age_ax.set_ylim(0, age_ax.get_ylim()[1] * 1.15)
     age_ax.grid(axis="y", color="#E5E7EB", linewidth=0.8)
     age_ax.set_axisbelow(True)
     age_ax.legend(frameon=False, ncols=2, loc="upper right")
 
-    ordered = missingness.sort_values("missing_percent", ascending=True)
+    metric = "participants_any_missing_percent"
+    ordered = missingness.sort_values(metric, ascending=True)
     bars = missing_ax.barh(
-        ordered["predictor_group"], ordered["missing_percent"], color=MISSING_COLOR, alpha=0.9
+        ordered["task_group"], ordered[metric], color=MISSING_COLOR, alpha=0.9
     )
-    missing_ax.set_title("B. Missing predictor cells", loc="left", fontweight="bold")
-    missing_ax.set_xlabel("Missing cells within predictor group (%)")
+    missing_ax.set_title("B. Participants with missing task data", loc="left", fontweight="bold")
+    missing_ax.set_xlabel("Participants with ≥1 missing predictor in task (%)")
     missing_ax.grid(axis="x", color="#E5E7EB", linewidth=0.8)
     missing_ax.set_axisbelow(True)
-    maximum = max(float(ordered["missing_percent"].max()), 1.0)
+    maximum = max(float(ordered[metric].max()), 1.0)
     missing_ax.set_xlim(0, maximum * 1.42)
     labels = [
-        f"{row.missing_cells}/{row.total_cells} ({row.missing_percent:.1f}%)"
+        f"{row.participants_any_missing}/{row.total_participants} "
+        f"({row.participants_any_missing_percent:.1f}%)"
         for row in ordered.itertuples()
     ]
     missing_ax.bar_label(bars, labels=labels, padding=4, fontsize=8)
 
-    total_missing = int(missingness["missing_cells"].sum())
-    total_cells = int(missingness["total_cells"].sum())
     fig.suptitle(
         "Modeling cohort and historical train–test split",
         x=0.06,
@@ -198,8 +211,8 @@ def make_figure(
     fig.text(
         0.06,
         0.965,
-        f"N={len(cohort)} participants; {total_missing}/{total_cells} predictor cells missing "
-        f"({100.0 * total_missing / total_cells:.1f}%) before fold-specific imputation",
+        f"N={len(cohort)} participants; {participants_any_missing}/{len(cohort)} have ≥1 missing "
+        "predictor before fold-specific imputation",
         ha="left",
         va="top",
         fontsize=9.5,
@@ -222,7 +235,7 @@ def update_manifest(output_dir: Path, filename: str) -> None:
         [
             {
                 "filename": filename,
-                "description": "Chronological-age distributions in the historical train/test split and predictor-group missingness.",
+                "description": "Chronological-age-bin distributions in the historical train/test split and participants with missing predictors by task.",
                 "sources": "X.csv; y.csv; recovered_train_test_split.csv",
             }
         ]
@@ -242,11 +255,23 @@ def main() -> None:
 
     cohort, age_counts = age_summary(y, split)
     missingness = missingness_summary(x)
+    grouped_columns = [
+        column
+        for columns in task_groups(list(x.columns)).values()
+        for column in columns
+    ]
+    participants_any_missing = int(x[grouped_columns].isna().any(axis=1).sum())
 
     figure_name = "dataset_split_overview.png"
     age_counts.to_csv(args.output_dir / "dataset_split_age_bin_counts.csv", index=False)
     missingness.to_csv(args.output_dir / "dataset_missingness_by_group.csv", index=False)
-    make_figure(cohort, age_counts, missingness, args.output_dir / figure_name)
+    make_figure(
+        cohort,
+        age_counts,
+        missingness,
+        participants_any_missing,
+        args.output_dir / figure_name,
+    )
     update_manifest(args.output_dir, figure_name)
 
     print(args.output_dir / figure_name)
