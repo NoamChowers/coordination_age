@@ -107,16 +107,22 @@ Run `notebooks/train_model_selection_and_jackknife_plus_test.ipynb` to:
 - predict the 29 historical test subjects with 95% JK+ intervals, saving
   row-level results and diagnostics under `outputs/train115_jkplus/`.
 
-The notebook is self-contained within this repository. Test outcomes enter
-only after architecture selection, fitting, and interval construction. Because
-they were inspected during earlier project work, the resulting test metrics
-are a post-hoc audit rather than pristine external validation.
+The notebook is self-contained within this repository. The 29 test outcomes
+were not accessed until model-family selection, preprocessing, the tuning
+protocol, and the KRR architecture had been fixed using the 115 training
+participants. The resulting metrics are therefore the project's independent
+held-out evaluation for this development split. They are not external
+validation in a newly collected cohort.
 
 Run `notebooks/model_diagnostics_and_conformal_visualizations.ipynb` to create
 the saved train-LOOCV comparison, held-out-test JK+ interval diagnostics, and
 full-data LOOCV KRR diagnostics. This notebook performs no model fitting; it
 reads the saved prediction tables and writes PNGs plus a figure manifest under
 `outputs/visualizations/`.
+
+Run `python scripts/visualizations/create_dataset_split_overview.py` to create
+the descriptive age-distribution and predictor-group missingness overview,
+along with its source summary tables, under `outputs/visualizations/`.
 
 ## Infer on a new X
 
