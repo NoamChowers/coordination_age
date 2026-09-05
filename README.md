@@ -201,9 +201,11 @@ result = predict_with_jackknife_plus(
     alpha=0.05,
 )
 ```
-## Statistical Inference
-To reproduce the statistical results of the report, run the notebook `inference.ipynb`
+
 The artifact directory must remain intact because the loader verifies file
 digests and model/residual ordering. The coverage statement is finite-sample
 marginal under exchangeability; it is not 95% conditional coverage for every
 individual feature profile.
+
+## Statistical Inference
+To reproduce the statistical results of the report, run the notebook `inference.ipynb`
