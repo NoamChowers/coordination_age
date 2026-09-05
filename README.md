@@ -17,6 +17,7 @@ python -m pip install -r requirements.txt
 - `Data/modeling_input_metadata.json`: subject ordering and construction audit.
 - `Data/train_test_split.csv`: recovered historical 115/29 membership, production-row
   position, and original within-partition order.
+- `train.csv`: training data for statistical inference
 
 The FIT script consumes `X.csv` and `y.csv`; it does not redo laboratory data
 processing or feature selection. Documentation for constructing these files is
@@ -200,7 +201,8 @@ result = predict_with_jackknife_plus(
     alpha=0.05,
 )
 ```
-
+## Statistical Inference
+To reproduce the statistical results of the report, run the notebook `inference.ipynb`
 The artifact directory must remain intact because the loader verifies file
 digests and model/residual ordering. The coverage statement is finite-sample
 marginal under exchangeability; it is not 95% conditional coverage for every
