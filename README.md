@@ -84,6 +84,7 @@ reruns, complete model refitting, held-out evaluation, task ablation and tests.
 | `scripts/`, `src/` | Runnable commands and shared modeling code |
 | `notebooks/` | Fitting and analysis walkthroughs |
 
-The separately contributed [statistical association analysis](notebooks/statistical_association_analysis.ipynb)
-uses `Data/association/` and the development dependencies. It is independent of
-the saved prediction pipeline.
+For the report's Section 4 statistical results, use the
+[association-analysis notebook](notebooks/statistical_association_analysis.ipynb)
+with `Data/association/train.csv`, `Data/association/variables.xlsx` and the
+development dependencies. This analysis is independent of the saved prediction pipeline.
