@@ -83,3 +83,7 @@ reruns, complete model refitting, held-out evaluation, task ablation and tests.
 | `outputs/` | Final comparison, held-out predictions, task ablation and figures |
 | `scripts/`, `src/` | Runnable commands and shared modeling code |
 | `notebooks/` | Fitting and analysis walkthroughs |
+
+The separately contributed [statistical association analysis](notebooks/statistical_association_analysis.ipynb)
+uses `Data/association/` and the development dependencies. It is independent of
+the saved prediction pipeline.

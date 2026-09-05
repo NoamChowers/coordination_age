@@ -108,6 +108,14 @@ or task-selection uncertainty.
 
 ## Data and inference contract
 
+The separate `statistical_association_analysis.ipynb` notebook uses
+`Data/association/train.csv` (115 rows) and `variables.xlsx` for task grouping.
+It fits randomized Lasso selective inference and does not produce the saved
+coordination-age predictor or its intervals. Its supplied dataset and statistical
+algorithm are preserved separately; the production audit checks its input
+preparation but does not revalidate the selective-inference theory or rerun the
+long Gibbs calculations. `requirements-dev.txt` includes its Excel reader.
+
 `Data/bothexperiments.csv` is the finalized aggregate input. Its construction and
 regeneration of `X.csv` / `y.csv` are documented in [data preparation](../scripts/data/README.md).
 The raw trial delivery and laboratory blacklist are not bundled; they are needed
