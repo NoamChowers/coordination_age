@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """Create a compact overview of the modeling cohort and historical split.
 
-The figure combines the within-split chronological-age distributions with the
-number of participants having at least one missing predictor in each task.
-Raw summary tables are saved beside the PNG so every plotted value is auditable.
+The figure shows within-split chronological-age distributions using descriptive
+age bins. Age counts and a separate missingness summary are saved beside the PNG.
 """
 
 from __future__ import annotations
@@ -21,7 +20,6 @@ import pandas as pd
 
 TRAIN_COLOR = "#0072B2"
 TEST_COLOR = "#D55E00"
-MISSING_COLOR = "#6B7280"
 
 
 def project_root() -> Path:
@@ -36,7 +34,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--split-csv",
         type=Path,
-        default=root / "outputs" / "train115_jkplus" / "recovered_train_test_split.csv",
+        default=root / "Data" / "train_test_split.csv",
     )
     parser.add_argument(
         "--output-dir", type=Path, default=root / "outputs" / "visualizations"
@@ -133,8 +131,6 @@ def missingness_summary(x: pd.DataFrame) -> pd.DataFrame:
 def make_figure(
     cohort: pd.DataFrame,
     age_counts: pd.DataFrame,
-    missingness: pd.DataFrame,
-    participants_any_missing: int,
     output_path: Path,
 ) -> None:
     plt.rcParams.update(
@@ -144,9 +140,7 @@ def make_figure(
             "font.size": 10,
         }
     )
-    fig, (age_ax, missing_ax) = plt.subplots(
-        1, 2, figsize=(12.0, 5.2), gridspec_kw={"width_ratios": [1.45, 1.0]}
-    )
+    fig, age_ax = plt.subplots(figsize=(7.2, 4.8))
 
     x_positions = np.arange(len(age_counts))
     width = 0.39
@@ -172,7 +166,7 @@ def make_figure(
             fontsize=8,
         )
 
-    age_ax.set_title("A. Chronological-age distribution", loc="left", fontweight="bold")
+    age_ax.set_title("Chronological-age distribution", loc="left", fontweight="bold")
     age_ax.set_xlabel("Age bin (years); labels above bars are participant counts")
     age_ax.set_ylabel("Participants within split (%)")
     age_ax.set_xticks(x_positions)
@@ -182,43 +176,7 @@ def make_figure(
     age_ax.set_axisbelow(True)
     age_ax.legend(frameon=False, ncols=2, loc="upper right")
 
-    metric = "participants_any_missing_percent"
-    ordered = missingness.sort_values(metric, ascending=True)
-    bars = missing_ax.barh(
-        ordered["task_group"], ordered[metric], color=MISSING_COLOR, alpha=0.9
-    )
-    missing_ax.set_title("B. Participants with missing task data", loc="left", fontweight="bold")
-    missing_ax.set_xlabel("Participants with ≥1 missing predictor in task (%)")
-    missing_ax.grid(axis="x", color="#E5E7EB", linewidth=0.8)
-    missing_ax.set_axisbelow(True)
-    maximum = max(float(ordered[metric].max()), 1.0)
-    missing_ax.set_xlim(0, maximum * 1.42)
-    labels = [
-        f"{row.participants_any_missing}/{row.total_participants} "
-        f"({row.participants_any_missing_percent:.1f}%)"
-        for row in ordered.itertuples()
-    ]
-    missing_ax.bar_label(bars, labels=labels, padding=4, fontsize=8)
-
-    fig.suptitle(
-        "Modeling cohort and historical train–test split",
-        x=0.06,
-        y=1.01,
-        ha="left",
-        fontsize=14,
-        fontweight="bold",
-    )
-    fig.text(
-        0.06,
-        0.965,
-        f"N={len(cohort)} participants; {participants_any_missing}/{len(cohort)} have ≥1 missing "
-        "predictor before fold-specific imputation",
-        ha="left",
-        va="top",
-        fontsize=9.5,
-        color="#374151",
-    )
-    fig.tight_layout(rect=(0, 0, 1, 0.91), w_pad=3.0)
+    fig.tight_layout()
     fig.savefig(output_path, dpi=240, bbox_inches="tight")
     plt.close(fig)
 
@@ -235,8 +193,8 @@ def update_manifest(output_dir: Path, filename: str) -> None:
         [
             {
                 "filename": filename,
-                "description": "Chronological-age-bin distributions in the historical train/test split and participants with missing predictors by task.",
-                "sources": "X.csv; y.csv; recovered_train_test_split.csv",
+                "description": "Chronological-age distributions within the training and test sets; bins are descriptive display groups.",
+                "sources": "Data/y.csv; Data/train_test_split.csv",
             }
         ]
     )
@@ -255,21 +213,12 @@ def main() -> None:
 
     cohort, age_counts = age_summary(y, split)
     missingness = missingness_summary(x)
-    grouped_columns = [
-        column
-        for columns in task_groups(list(x.columns)).values()
-        for column in columns
-    ]
-    participants_any_missing = int(x[grouped_columns].isna().any(axis=1).sum())
-
     figure_name = "dataset_split_overview.png"
     age_counts.to_csv(args.output_dir / "dataset_split_age_bin_counts.csv", index=False)
     missingness.to_csv(args.output_dir / "dataset_missingness_by_group.csv", index=False)
     make_figure(
         cohort,
         age_counts,
-        missingness,
-        participants_any_missing,
         args.output_dir / figure_name,
     )
     update_manifest(args.output_dir, figure_name)

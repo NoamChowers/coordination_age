@@ -1,0 +1,18 @@
+{
+  "analysis": "Final training-set nested-LOOCV candidate comparison",
+  "baseline_sha256_before_update": "4deae749001b0c8b1c59a516c0e002c6e39512fc3c26ff09c5fa18c25d1a1642",
+  "model_configurations": {
+    "Random Forest": "random_forest/configuration.json"
+  },
+  "rerun_models": [
+    "Random Forest"
+  ],
+  "reused_models": [
+    "ElasticNet",
+    "Lasso",
+    "OLS",
+    "RBF Kernel Ridge",
+    "Ridge"
+  ],
+  "test_outcomes_used_for_tuning": false
+}

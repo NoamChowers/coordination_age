@@ -19,6 +19,7 @@ from typing import Any, Mapping
 
 import numpy as np
 import pandas as pd
+import sklearn
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -63,6 +64,12 @@ def load_jackknife_plus_artifacts(
 
     if manifest_path is not None:
         manifest = json.loads(Path(manifest_path).read_text(encoding="utf-8"))
+        fitted_version = manifest.get("software", {}).get("scikit_learn")
+        if fitted_version and fitted_version != sklearn.__version__:
+            raise ValueError(
+                f"Artifacts require scikit-learn {fitted_version}; installed "
+                f"{sklearn.__version__}. Install requirements.txt or refit the models."
+            )
         for name, path in paths.items():
             expected = manifest.get("artifacts", {}).get(name, {}).get("sha256")
             if expected is None:
@@ -103,6 +110,18 @@ def validate_inference_inputs(
         )
     if not X.index.is_unique:
         raise ValueError("Inference row identifiers must be unique.")
+    if X.empty:
+        raise ValueError("Provide at least one participant row.")
+    nonnumeric = X.select_dtypes(exclude="number").columns.tolist()
+    if nonnumeric:
+        raise ValueError(f"Predictors must be numeric; use empty cells for missing values: {nonnumeric}")
+    if np.isinf(X.to_numpy(dtype=float)).any():
+        raise ValueError("Predictors may be missing, but cannot contain infinity.")
+    if X.isna().all(axis=1).any():
+        raise ValueError("A participant cannot have every predictor missing.")
+    sex_column = "Sex_0Female_1Male"
+    if sex_column in X and not X[sex_column].dropna().isin([0, 1]).all():
+        raise ValueError("Sex_0Female_1Male must be 0, 1, or missing.")
 
     loo_models = list(loo_artifact.get("loo_models", []))
     n_expected = int(loo_artifact.get("n_training_observations", -1))
@@ -198,7 +217,7 @@ def predict_with_jackknife_plus(
     loo_artifact: Mapping[str, Any],
     production_model: Any,
     residuals: pd.DataFrame,
-    alpha: float = 0.10,
+    alpha: float = 0.05,
     clip: tuple[float, float] | None = None,
 ) -> pd.DataFrame:
     """Return full-model predictions and JK+ intervals for ``X``."""
@@ -250,10 +269,12 @@ def predict_with_jackknife_plus(
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--x-csv", type=Path, required=True)
-    parser.add_argument("--artifact-dir", type=Path, required=True)
+    parser.add_argument("--artifact-dir", type=Path,
+                        default=PROJECT_ROOT / "artifacts/jackknife_plus_krr")
     parser.add_argument("--output-csv", type=Path, required=True)
     parser.add_argument("--id-column", default=None)
-    parser.add_argument("--alpha", type=float, default=0.10)
+    parser.add_argument("--alpha", type=float, default=0.05,
+                        help="Requested miscoverage (default: 0.05 for 95%% intervals).")
     parser.add_argument("--clip-lower", type=float, default=None)
     parser.add_argument("--clip-upper", type=float, default=None)
     return parser

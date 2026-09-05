@@ -1,5 +1,10 @@
 # Data preparation scripts
 
+The repository already includes the finalized aggregate table and modeling
+inputs. Steps 1–2 below require a separate laboratory trial delivery, normalized
+blacklist and supplemental aggregates; those raw inputs are not bundled. To
+reproduce `Data/X.csv` and `Data/y.csv` from the included data, start at step 3.
+
 This pipeline takes the laboratory's all-trials feature delivery and produces
 an aggregate dataset that conforms to the model's required data-validity
 rules: the blacklist is authoritative, copied trials do not contribute to
