@@ -208,4 +208,4 @@ marginal under exchangeability; it is not 95% conditional coverage for every
 individual feature profile.
 
 ## Statistical Inference
-To reproduce the statistical results of the report, run the notebook `inference.ipynb`
+To reproduce the statistical results in section 4 of the report, run the notebook `inference.ipynb`
